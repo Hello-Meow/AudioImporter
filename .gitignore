@@ -37,5 +37,4 @@ ehthumbs.db
 [Dd]esktop.ini
 
 /Documentation/
-Assets/AudioImporter/Bass/
-Assets/AudioImporter/BassExporter.unitypackage*
+Assets/AudioImporter/Bass*
