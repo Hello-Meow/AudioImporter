@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Networking;
 
 /// <summary>
@@ -8,7 +9,7 @@ using UnityEngine.Networking;
 public class MobileImporter : AudioImporter
 {
     private UnityWebRequest webRequest;
-    private UnityWebRequestAsyncOperation operation;
+    private AsyncOperation operation;
     
     public override float progress
     {
@@ -63,6 +64,9 @@ public class MobileImporter : AudioImporter
         {
             webRequest.Abort();
             webRequest.Dispose();
+            webRequest = null;
+
+            StopAllCoroutines();
         }    
     }
 
@@ -71,16 +75,17 @@ public class MobileImporter : AudioImporter
         webRequest = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.MPEG);
         operation = webRequest.SendWebRequest();
 
-        operation.completed += OnCompleted;
+        StartCoroutine(WaitForWebRequest());
     }
-
-    private void OnCompleted(AsyncOperation operation)
+    
+    IEnumerator WaitForWebRequest()
     {
-        operation.completed -= OnCompleted;
+        yield return operation;
 
         audioClip = DownloadHandlerAudioClip.GetContent(webRequest);
 
         webRequest.Dispose();
+        webRequest = null;
 
         OnLoaded();
     }
