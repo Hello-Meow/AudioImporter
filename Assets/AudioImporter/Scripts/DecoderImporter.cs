@@ -38,7 +38,7 @@ public abstract class DecoderImporter : AudioImporter
         setData = false;
 
         if(!isDone)
-            destroy(audioClip);
+            Destroy(audioClip);
 
         waitForMainThread.Set();
         
