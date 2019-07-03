@@ -37,6 +37,9 @@ public abstract class DecoderImporter : AudioImporter
         createClip = false;
         setData = false;
 
+        if(!isDone)
+            destroy(audioClip);
+
         waitForMainThread.Set();
         
         import.Join();
