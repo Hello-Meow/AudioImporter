@@ -24,8 +24,11 @@ public class ImporterExample : MonoBehaviour
     {
         importer.Import(path);
 
-        while (!importer.isDone)
+        while (!importer.isDone && !importer.isError)
             yield return null;
+
+        if (importer.isError)
+            Debug.LogError(importer.error);
 
         audioSource.clip = importer.audioClip;
         audioSource.Play();

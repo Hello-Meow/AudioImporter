@@ -102,7 +102,7 @@ public abstract class DecoderImporter : AudioImporter
 
     private void CreateClip()
     {
-        string name = Path.GetFileNameWithoutExtension(uri);
+        string name = Path.GetFileNameWithoutExtension(uri.LocalPath);
 
         audioClip = AudioClip.Create(name, info.lengthSamples / info.channels, info.channels, info.sampleRate, false);
 

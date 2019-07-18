@@ -14,7 +14,7 @@ public abstract class AudioImporter : MonoBehaviour
     /// <summary>
     /// The uri of the file being imported.
     /// </summary>
-    public string uri { get; private set; }
+    public Uri uri { get; private set; }
 
     /// <summary>
     /// The AudioClip of the file that is being imported.
@@ -49,8 +49,8 @@ public abstract class AudioImporter : MonoBehaviour
     {
         Abort();
 
-        this.uri = GetUri(uri);
-
+        this.uri = new Uri(uri);
+        
         Import();
     }
 
@@ -65,13 +65,5 @@ public abstract class AudioImporter : MonoBehaviour
     {
         if (Loaded != null)
             Loaded(audioClip);
-    }
-
-    private string GetUri(string uri)
-    {
-        if (uri.StartsWith("file://") || uri.StartsWith("http://") || uri.StartsWith("https://"))
-            return uri;
-
-        return "file://" + uri;
-    }
+    }    
 }

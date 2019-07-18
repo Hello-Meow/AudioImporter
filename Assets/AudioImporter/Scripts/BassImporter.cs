@@ -19,10 +19,10 @@ public class BassImporter : DecoderImporter
 
     protected override void Initialize()
     {
-        if (uri.StartsWith("file://"))
-            handle = Bass.BASS_StreamCreateFile(uri.Substring(7), 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
+        if (uri.IsFile)
+            handle = Bass.BASS_StreamCreateFile(uri.LocalPath, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
         else
-            handle = Bass.BASS_StreamCreateURL(uri, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, null, default(IntPtr));
+            handle = Bass.BASS_StreamCreateURL(uri.AbsoluteUri, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, null, default(IntPtr));
 
         BASSError error = Bass.BASS_ErrorGetCode();
         if (error != BASSError.BASS_OK && error != BASSError.BASS_ERROR_ALREADY)
