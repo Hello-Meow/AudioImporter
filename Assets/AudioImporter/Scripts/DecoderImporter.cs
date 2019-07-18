@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 using UnityEngine;
@@ -18,9 +19,10 @@ public abstract class DecoderImporter : AudioImporter
 
     private int index;
 
-    private bool createClip;
-    private bool setData;
     private bool abort;
+
+    private Queue<Action> executionQueue = new Queue<Action>();
+    private object _lock = new object();
 
     /// <summary>
     /// Stop importing as soon as possible.
@@ -34,11 +36,12 @@ public abstract class DecoderImporter : AudioImporter
             return;
 
         abort = true;
-        createClip = false;
-        setData = false;
 
         if(!isDone)
             Destroy(audioClip);
+
+        lock (_lock)
+            executionQueue.Clear();
 
         waitForMainThread.Set();
         
@@ -70,14 +73,11 @@ public abstract class DecoderImporter : AudioImporter
 
         info = GetInfo();
 
-        createClip = true;
-        waitForMainThread.WaitOne();
-
+        Dispatch(CreateClip);
         Decode();
+        Cleanup();
 
         progress = 1;
-
-        Cleanup();
     }
 
     private void Decode()
@@ -92,8 +92,7 @@ public abstract class DecoderImporter : AudioImporter
             if (read + index >= info.lengthSamples)
                 Array.Resize(ref buffer, read);
 
-            setData = true;
-            waitForMainThread.WaitOne();
+            Dispatch(SetData);
 
             index += read;
 
@@ -107,8 +106,6 @@ public abstract class DecoderImporter : AudioImporter
 
         audioClip = AudioClip.Create(name, info.lengthSamples / info.channels, info.channels, info.sampleRate, false);
 
-        createClip = false;
-
         waitForMainThread.Set();
     }
 
@@ -119,8 +116,6 @@ public abstract class DecoderImporter : AudioImporter
             Abort();
             return;
         }
-
-        setData = false;
 
         audioClip.SetData(buffer, index / info.channels);
 
@@ -141,13 +136,21 @@ public abstract class DecoderImporter : AudioImporter
         progress = 1;
     }
 
-    void Update()
+    private void Dispatch(Action action)
     {
-        if (createClip)
-            CreateClip();
+        lock (_lock)
+            executionQueue.Enqueue(action);
 
-        if (setData)
-            SetData();               
+        waitForMainThread.WaitOne();
+    }
+
+    void Update()
+    {        
+        lock(_lock)
+        {
+            while(executionQueue.Count > 0)            
+                executionQueue.Dequeue().Invoke();
+        }
     }
 
     protected abstract void Initialize();
