@@ -73,17 +73,24 @@ public abstract class DecoderImporter : AudioImporter
         createClip = true;
         waitForMainThread.WaitOne();
 
+        Decode();
+
+        progress = 1;
+
+        Cleanup();
+    }
+
+    private void Decode()
+    {
         while (index < info.lengthSamples)
         {
-            //TODO: issue where end of stream is reached but index < lengthSamples
-
             int read = GetSamples(buffer, 0, bufferSize);
+
+            if (abort || read == 0)
+                break;
 
             if (read + index >= info.lengthSamples)
                 Array.Resize(ref buffer, read);
-
-            if (abort)
-                break;
 
             setData = true;
             waitForMainThread.WaitOne();
@@ -92,8 +99,6 @@ public abstract class DecoderImporter : AudioImporter
 
             progress = (float)index / info.lengthSamples;
         }
-
-        Cleanup();
     }
 
     private void CreateClip()
