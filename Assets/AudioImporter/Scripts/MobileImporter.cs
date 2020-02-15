@@ -72,7 +72,7 @@ public class MobileImporter : AudioImporter
 
     protected override void Import()
     {
-        webRequest = UnityWebRequestMultimedia.GetAudioClip(uri.AbsoluteUri, AudioType.MPEG);
+        webRequest = UnityWebRequestMultimedia.GetAudioClip(uri.AbsoluteUri, AudioType.UNKNOWN);
         operation = webRequest.SendWebRequest();
 
         StartCoroutine(WaitForWebRequest());

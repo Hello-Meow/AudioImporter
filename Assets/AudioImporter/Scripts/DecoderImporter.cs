@@ -85,8 +85,11 @@ public abstract class DecoderImporter : AudioImporter
         while (index < info.lengthSamples)
         {
             int read = GetSamples(buffer, 0, bufferSize);
+            
+            if(read == 0 && info.lengthSamples - index < bufferSize)
+                break;
 
-            if (abort || read == 0)
+            if (abort)
                 break;
 
             if (read + index >= info.lengthSamples)
