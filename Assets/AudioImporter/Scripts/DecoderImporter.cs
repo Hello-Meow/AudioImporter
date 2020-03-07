@@ -94,7 +94,7 @@ public abstract class DecoderImporter : AudioImporter
             if (abort)
                 break;
 
-            if (read + index >= info.lengthSamples)
+            if (index + bufferSize >= info.lengthSamples)
                 Array.Resize(ref buffer, info.lengthSamples - index);
 
             Dispatch(SetData);
