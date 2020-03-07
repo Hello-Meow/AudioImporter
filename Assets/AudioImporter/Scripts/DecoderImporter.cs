@@ -86,14 +86,14 @@ public abstract class DecoderImporter : AudioImporter
         {
             int read = GetSamples(buffer, 0, bufferSize);
             
-            if(read == 0 && info.lengthSamples - index < bufferSize)
+            if(read == 0)
                 break;
 
             if (abort)
                 break;
 
             if (read + index >= info.lengthSamples)
-                Array.Resize(ref buffer, read);
+                Array.Resize(ref buffer, info.lengthSamples - index);
 
             Dispatch(SetData);
 
