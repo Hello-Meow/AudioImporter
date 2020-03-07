@@ -55,6 +55,9 @@ public abstract class AudioImporter : MonoBehaviour
         Abort();
 
         this.uri = new Uri(uri);
+
+        isError = false;
+        error = string.Empty;
         
         Import();
     }
