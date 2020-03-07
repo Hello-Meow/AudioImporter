@@ -14,8 +14,7 @@ public class ImporterExample : MonoBehaviour
 
     private void OnFileSelected(string path)
     {
-        if (importer.isDone)
-            Destroy(audioSource.clip);
+        Destroy(audioSource.clip);
 
         StartCoroutine(Import(path));
     }
@@ -24,7 +23,7 @@ public class ImporterExample : MonoBehaviour
     {
         importer.Import(path);
 
-        while (!importer.isDone && !importer.isError)
+        while (!importer.isInitialized && !importer.isError)
             yield return null;
 
         if (importer.isError)

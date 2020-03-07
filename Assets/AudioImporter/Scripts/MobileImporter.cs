@@ -33,6 +33,14 @@ public class MobileImporter : AudioImporter
         }
     }
 
+    public override bool isInitialized
+    {
+        get
+        {
+            return isDone;
+        }       
+    }
+
     public override bool isError
     {
         get

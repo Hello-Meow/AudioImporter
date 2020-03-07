@@ -27,9 +27,14 @@ public abstract class AudioImporter : MonoBehaviour
     public virtual float progress { get; protected set; }
 
     /// <summary>
-    /// Is the importer done?
+    /// Is the full audio file imported?
     /// </summary>
     public virtual bool isDone { get; protected set; }
+
+    /// <summary>
+    /// When the importer is initialized, the AudioClip is available. Importing might continue in the background.
+    /// </summary>
+    public virtual bool isInitialized { get; protected set; }
 
     /// <summary>
     /// Has an error occured?

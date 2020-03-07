@@ -37,7 +37,7 @@ public abstract class DecoderImporter : AudioImporter
 
         abort = true;
 
-        if(!isDone)
+        if(!isInitialized)
             Destroy(audioClip);
 
         lock (_lock)
@@ -54,6 +54,7 @@ public abstract class DecoderImporter : AudioImporter
         buffer = new float[bufferSize];
 
         isDone = false;
+        isInitialized = false;
         abort = false;
         index = 0;
         progress = 0;
@@ -78,6 +79,7 @@ public abstract class DecoderImporter : AudioImporter
         Cleanup();
 
         progress = 1;
+        isDone = true;
     }
 
     private void Decode()
@@ -122,9 +124,9 @@ public abstract class DecoderImporter : AudioImporter
 
         audioClip.SetData(buffer, index / info.channels);
 
-        if(!isDone)
+        if(!isInitialized)
         {
-            isDone = true;
+            isInitialized = true;
             OnLoaded();
         }
 
