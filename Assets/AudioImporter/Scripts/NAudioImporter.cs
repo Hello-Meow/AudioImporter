@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("AudioImporter/NAudio Importer")]
 public class NAudioImporter : DecoderImporter
 {
-    private Mp3FileReader reader;
+    private WaveStream waveStream;
     private ISampleProvider sampleProvider;
     
     protected override void Initialize()
@@ -18,8 +18,8 @@ public class NAudioImporter : DecoderImporter
             if (!uri.IsFile)
                 throw new FormatException("NAudioImporter does not support URLs");
 
-            reader = new Mp3FileReader(uri.LocalPath);            
-            sampleProvider = reader.ToSampleProvider();
+            waveStream = new AudioFileReader(uri.LocalPath);
+            sampleProvider = waveStream.ToSampleProvider();
         }
         catch (Exception e)
         {
@@ -29,17 +29,17 @@ public class NAudioImporter : DecoderImporter
 
     protected override void Cleanup()
     {
-        if (reader != null)
-            reader.Dispose();
+        if (waveStream != null)
+            waveStream.Dispose();
 
-        reader = null;
+        waveStream = null;
         sampleProvider = null;
     }
 
     protected override AudioInfo GetInfo()
     {
-        WaveFormat format = reader.WaveFormat;
-        int lengthSamples = (int)reader.Length / (format.BitsPerSample / 8);
+        WaveFormat format = waveStream.WaveFormat;
+        int lengthSamples = (int)waveStream.Length / (format.BitsPerSample / 8);
         return new AudioInfo(lengthSamples, format.SampleRate, format.Channels);
     }
 
