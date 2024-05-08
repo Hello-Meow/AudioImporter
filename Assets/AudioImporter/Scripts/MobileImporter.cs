@@ -48,7 +48,7 @@ public class MobileImporter : AudioImporter
             if (webRequest == null)
                 return false;
 
-            return webRequest.isNetworkError || webRequest.isHttpError;
+            return !string.IsNullOrEmpty(webRequest.error);
         }
     }
 
