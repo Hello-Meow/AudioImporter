@@ -46,6 +46,9 @@ public abstract class DecoderImporter : AudioImporter
         waitForMainThread.Set();
         
         import.Join();
+
+        lock(_lock)
+            executionQueue.Clear();
     }
 
     protected override void Import()
@@ -60,7 +63,7 @@ public abstract class DecoderImporter : AudioImporter
         progress = 0;
 
         waitForMainThread = new AutoResetEvent(false);
-        
+
         import = new Thread(DoImport);
         import.Start();
     }
