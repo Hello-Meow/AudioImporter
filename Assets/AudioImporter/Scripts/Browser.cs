@@ -5,6 +5,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.IO;
 using System.Collections.Generic;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 /// <summary>
 /// A file browser.
@@ -34,9 +37,18 @@ public class Browser : MonoBehaviour
     private List<string> files;
     private bool selectDrive;
     private bool scrolling;
-    
+
+#if ENABLE_INPUT_SYSTEM
+    private InputAction move;
+    private InputAction cancel;
+#endif
+
     void Awake()
     {
+#if ENABLE_INPUT_SYSTEM
+        move = InputSystem.actions.FindAction("Move");
+        cancel = InputSystem.actions.FindAction("Cancel");
+#endif
         directories = new List<string>();
         files = new List<string>();
 
@@ -205,11 +217,29 @@ public class Browser : MonoBehaviour
         {
             if (selected.transform.IsChildOf(transform))
             {
-                //TODO: use ENABLE_INPUT_SYSTEM conditional compilation 
+                bool up = false;
+                bool scroll = false;
+
+#if ENABLE_INPUT_SYSTEM
+                if (Mathf.Abs(move.ReadValue<Vector2>().y) > .3f)
+                    scroll = true;
+
+                if(cancel.WasReleasedThisFrame())
+                    up = true;
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+                if (Mathf.Abs(Input.GetAxis("Vertical")) > .3f)
+                    scroll = true;
+
                 if (Input.GetKeyDown(KeyCode.Joystick1Button1) || Input.GetKeyDown(KeyCode.Escape))
+                    up = true;
+#endif
+
+                if (up)
                     Up();
 
-                if (Mathf.Abs(Input.GetAxis("Vertical")) > .3f)
+                if (scroll)
                 {
                     if (selected.transform.IsChildOf(transform))
                     {
