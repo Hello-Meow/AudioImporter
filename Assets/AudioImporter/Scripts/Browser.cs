@@ -224,7 +224,7 @@ public class Browser : MonoBehaviour
                 if (Mathf.Abs(move.ReadValue<Vector2>().y) > .3f)
                     scroll = true;
 
-                if(cancel.WasReleasedThisFrame())
+                if(cancel.WasPressedThisFrame())
                     up = true;
 #endif
 
