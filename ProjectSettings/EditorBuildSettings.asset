@@ -4,4 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/AudioImporter/Examples/Importer Example.unity
+    guid: 4f90695dab8c43647aca7f490e7efd45
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: bdef734fd2a4545469fc4612db1d005c,
+      type: 2}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: f62b92cac21e4104bad36fabba082987,
+      type: 3}
